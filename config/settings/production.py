@@ -2,6 +2,8 @@ from .base import *
 
 DEBUG = False
 
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='dreadlockssalonbackend-production.up.railway.app').split(',')
+
 # Security
 SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
