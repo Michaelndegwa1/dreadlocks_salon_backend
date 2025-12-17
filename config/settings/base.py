@@ -73,23 +73,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# Database configuration with SQLite fallback for development
-try:
-    DATABASE_URL = config('DATABASE_URL')
-    if DATABASE_URL and DATABASE_URL.strip():
-        DATABASES = {
-            'default': dj_database_url.config(default=DATABASE_URL)
-        }
-    else:
-        raise ValueError("Empty DATABASE_URL")
-except (Exception, ValueError):
-    # Fallback to SQLite for development
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+# Database configuration
+DATABASES = {
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL', default='sqlite:///' + str(BASE_DIR / 'db.sqlite3')),
+        conn_max_age=600
+    )
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
