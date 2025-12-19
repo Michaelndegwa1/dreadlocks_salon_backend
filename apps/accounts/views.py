@@ -37,3 +37,22 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
         elif hasattr(user, 'is_manager') and user.is_manager and hasattr(user, 'manager_profile'):
             return user.manager_profile
         return user
+
+from rest_framework import filters
+from .models import Customer
+
+class CustomerListView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    serializer_class = CustomerSerializer
+    queryset = Customer.objects.all().order_by('-created_at')
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['user__first_name', 'user__last_name', 'user__email', 'user__phone_number']
+
+from .models import Stylist
+
+class StylistListView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    serializer_class = StylistSerializer
+    queryset = Stylist.objects.all().order_by('-created_at')
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['user__first_name', 'user__last_name', 'user__email', 'user__phone_number', 'specialties']

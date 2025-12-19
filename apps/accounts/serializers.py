@@ -12,15 +12,16 @@ class UserSerializer(serializers.ModelSerializer):
 
 class RegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
-    role = serializers.ChoiceField(choices=['customer', 'stylist', 'manager'], write_only=True)
+    specialties = serializers.ListField(child=serializers.CharField(), write_only=True, required=False)
 
     class Meta:
         model = User
-        fields = ('email', 'password', 'first_name', 'last_name', 'phone_number', 'role')
+        fields = ('email', 'password', 'first_name', 'last_name', 'phone_number', 'role', 'specialties')
 
     def create(self, validated_data):
         role = validated_data.pop('role')
         password = validated_data.pop('password')
+        specialties = validated_data.pop('specialties', [])
         
         user = User(**validated_data)
         user.set_password(password)
@@ -33,6 +34,16 @@ class RegistrationSerializer(serializers.ModelSerializer):
             user.is_manager = True
             
         user.save()
+
+        # Handle specialties for stylists
+        if role == 'stylist' and specialties:
+            # The signal creates the profile, so we just need to update it
+            # We refresh from db to ensure we have the profile created by signal
+            user.refresh_from_db()
+            if hasattr(user, 'stylist_profile'):
+                user.stylist_profile.specialties = specialties
+                user.stylist_profile.save()
+
         return user
 
 class CustomerSerializer(serializers.ModelSerializer):

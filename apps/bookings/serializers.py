@@ -5,7 +5,12 @@ from apps.accounts.models import Stylist
 from apps.availability.models import TimeSlot
 from .services import BookingService
 
+from apps.accounts.serializers import CustomerSerializer, StylistSerializer
+
 class BookingSerializer(serializers.ModelSerializer):
+    customer = CustomerSerializer(read_only=True)
+    stylist = StylistSerializer(read_only=True)
+    
     class Meta:
         model = Booking
         fields = '__all__'

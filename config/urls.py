@@ -14,6 +14,8 @@ urlpatterns = [
     path('api/v1/bookings/', include('apps.bookings.urls')),
     path('api/v1/salon/', include('apps.salon.urls')),
     path('api/v1/notifications/', include('apps.notifications.urls')),
+    path('api/v1/analytics/', include('apps.analytics.urls')),
+    path('api/v1/payments/', include('apps.payments.urls')), # Added payments URL
     
     # API Documentation
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
