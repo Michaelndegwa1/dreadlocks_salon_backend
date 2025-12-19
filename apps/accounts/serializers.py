@@ -9,15 +9,21 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     """Custom token serializer that accepts email instead of username"""
     username_field = 'email'
     
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # The parent creates a field based on username_field, which is 'email'
+        # So the field is already named 'email', we just need to make sure it's required
+        if 'email' in self.fields:
+            self.fields['email'].required = True
+    
     def validate(self, attrs):
-        # Map 'email' field to 'username' for the parent serializer
-        # Since User model uses email as USERNAME_FIELD, we need to pass it as 'username'
-        if 'email' in attrs:
-            attrs['username'] = attrs.pop('email')
-        elif 'username' not in attrs:
+        # The frontend sends 'email', and our User model uses email as USERNAME_FIELD
+        # The parent serializer will handle authentication using the email field
+        # We just need to ensure email is present
+        if 'email' not in attrs:
             raise serializers.ValidationError('Email is required.')
         
-        # Call parent validate which will authenticate using email (passed as username)
+        # Call parent validate - it will authenticate using email because username_field = 'email'
         return super().validate(attrs)
 
 class UserSerializer(serializers.ModelSerializer):
