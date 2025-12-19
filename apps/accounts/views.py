@@ -2,20 +2,9 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import get_user_model
-from .serializers import (
-    RegistrationSerializer, 
-    UserSerializer, 
-    CustomerSerializer, 
-    StylistSerializer, 
-    ManagerSerializer,
-    CustomTokenObtainPairSerializer
-)
+from .serializers import RegistrationSerializer, UserSerializer, CustomerSerializer, StylistSerializer, ManagerSerializer
 
 User = get_user_model()
-
-class CustomTokenObtainPairView(TokenObtainPairView):
-    """Custom token view that accepts email instead of username"""
-    serializer_class = CustomTokenObtainPairSerializer
 
 class RegistrationView(generics.CreateAPIView):
     queryset = User.objects.all()

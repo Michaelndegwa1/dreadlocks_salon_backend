@@ -1,30 +1,8 @@
 from rest_framework import serializers
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import get_user_model
 from .models import Customer, Stylist, Manager
 
 User = get_user_model()
-
-class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    """Custom token serializer that accepts email instead of username"""
-    username_field = 'email'
-    
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # The parent creates a field based on username_field, which is 'email'
-        # So the field is already named 'email', we just need to make sure it's required
-        if 'email' in self.fields:
-            self.fields['email'].required = True
-    
-    def validate(self, attrs):
-        # The frontend sends 'email', and our User model uses email as USERNAME_FIELD
-        # The parent serializer will handle authentication using the email field
-        # We just need to ensure email is present
-        if 'email' not in attrs:
-            raise serializers.ValidationError('Email is required.')
-        
-        # Call parent validate - it will authenticate using email because username_field = 'email'
-        return super().validate(attrs)
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:

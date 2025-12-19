@@ -5,7 +5,7 @@ import os
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 # Allowed hosts
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost').split(',')
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,*.railway.app').split(',')
 
 # Railway proxy configuration
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
