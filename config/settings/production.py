@@ -1,5 +1,6 @@
 from .base import *
 import os
+# Triggering redeploy to apply migrations to linked database
 
 # Debug - should be False in production
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
