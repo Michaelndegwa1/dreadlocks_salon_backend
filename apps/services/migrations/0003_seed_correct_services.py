@@ -4,6 +4,10 @@ def seed_correct_services(apps, schema_editor):
     ServiceCategory = apps.get_model('services', 'ServiceCategory')
     Service = apps.get_model('services', 'Service')
 
+    # Clear existing data to avoid duplicates and ensure a clean state
+    Service.objects.all().delete()
+    ServiceCategory.objects.all().delete()
+
     default_data = [
         {
             'category': {'name': 'Starter & Installation Services', 'description': 'These services establish the foundation of your loc journey based on your hair texture and desired size.'},
