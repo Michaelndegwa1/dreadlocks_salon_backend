@@ -1,5 +1,0 @@
-e5abf06 Add default services and categories via data migration
-dde32ec Automate admin creation during deployment
-beeaccb Trigger redeploy to apply migrations to linked database
-48d4820 Synchronize STATIC_ROOT to fix broken admin CSS on Railway
-7d9478b Add collectstatic to Procfile to fix admin CSS
