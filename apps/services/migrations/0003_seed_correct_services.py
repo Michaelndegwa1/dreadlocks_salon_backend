@@ -1,14 +1,9 @@
-import os
-import django
-import sys
+from django.db import migrations
 
-# Set up Django environment
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
-django.setup()
+def seed_correct_services(apps, schema_editor):
+    ServiceCategory = apps.get_model('services', 'ServiceCategory')
+    Service = apps.get_model('services', 'Service')
 
-from apps.services.models import Service, ServiceCategory
-
-def seed_defaults():
     default_data = [
         {
             'category': {'name': 'Starter & Installation Services', 'description': 'These services establish the foundation of your loc journey based on your hair texture and desired size.'},
@@ -25,7 +20,7 @@ def seed_defaults():
             'services': [
                 {'name': 'Palm Rolling & Retwist', 'description': 'Standard maintenance using gels or oils to smooth new growth into the loc.', 'price': 1200, 'duration_minutes': 90},
                 {'name': 'Interlocking/Retie', 'description': 'Using a tool to pull the loc through the new growth; standard for Sisterlocks or microlocs.', 'price': 1800, 'duration_minutes': 120},
-                {'name': 'Crochet Retouch', 'description': 'Using a needle to pull loose hairs back into the loc for a very neat, long-lasting look.', price: 2500, 'duration_minutes': 150},
+                {'name': 'Crochet Retouch', 'description': 'Using a needle to pull loose hairs back into the loc for a very neat, long-lasting look.', 'price': 2500, 'duration_minutes': 150},
                 {'name': 'Loc Rearrangement', 'description': 'Redefining or adjusting the parting pattern (partitions) for a cleaner look.', 'price': 0, 'duration_minutes': 60},
                 {'name': 'Styling (Updos/Braids)', 'description': 'Professional styling added to maintenance, such as petals, barrel twists, or fishbone braids.', 'price': 0, 'duration_minutes': 60}
             ]
@@ -73,7 +68,7 @@ def seed_defaults():
             category.save()
 
         for service_data in item['services']:
-            Service.objects.get_or_create(
+            Service.objects.update_or_create(
                 name=service_data['name'],
                 category=category,
                 defaults={
@@ -84,34 +79,12 @@ def seed_defaults():
                 }
             )
 
-def restore():
-    print("Starting data restoration...")
-    sys.stdout.flush()
-    
-    try:
-        # 1. Clear existing data
-        print("Clearing existing services and categories...")
-        sys.stdout.flush()
-        Service.objects.all().delete()
-        ServiceCategory.objects.all().delete()
-        
-        # 2. Run seeding logic
-        print("Seeding new data...")
-        sys.stdout.flush()
-        seed_defaults()
-        
-        print("Restoration complete!")
-        sys.stdout.flush()
-        print(f"Categories: {ServiceCategory.objects.count()}")
-        sys.stdout.flush()
-        print(f"Services: {Service.objects.count()}")
-        sys.stdout.flush()
-    except Exception as e:
-        print(f"Error during restoration: {e}")
-        sys.stdout.flush()
-        import traceback
-        traceback.print_exc()
-        sys.stdout.flush()
+class Migration(migrations.Migration):
 
-if __name__ == "__main__":
-    restore()
+    dependencies = [
+        ('services', '0002_seed_default_services'),
+    ]
+
+    operations = [
+        migrations.RunPython(seed_correct_services),
+    ]
