@@ -11,7 +11,7 @@ class ServiceSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Service
-        fields = '__all__'
+        fields = ['id', 'category', 'category_name', 'name', 'description', 'price', 'duration_minutes', 'image', 'rating', 'review_count', 'is_active', 'created_at', 'updated_at']
 
 class StylistServiceSerializer(serializers.ModelSerializer):
     service_name = serializers.CharField(source='service.name', read_only=True)

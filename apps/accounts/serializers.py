@@ -12,6 +12,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class RegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
+    role = serializers.CharField(write_only=True, default='customer')
     specialties = serializers.ListField(child=serializers.CharField(), write_only=True, required=False)
 
     class Meta:
