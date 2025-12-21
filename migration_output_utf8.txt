@@ -1,0 +1,4 @@
+﻿Operations to perform:
+  Apply all migrations: accounts, admin, auth, availability, bookings, contenttypes, notifications, salon, services, sessions
+Running migrations:
+  No migrations to apply.
